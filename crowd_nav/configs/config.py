@@ -42,7 +42,7 @@ class Config(object):
     humans.radius = 0.3 # radius of each human
     humans.v_pref = 1 # max velocity of each human
     # FOV = this values * PI
-    humans.FOV = 2.
+    humans.FOV = 2.0
 
     # a human may change its goal before it reaches its old goal
     humans.random_goal_changing = True

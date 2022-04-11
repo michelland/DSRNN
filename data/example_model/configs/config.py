@@ -63,11 +63,11 @@ class Config(object):
     robot = BaseConfig()
     robot.visible = False # the robot is visible to humans
     # srnn for now
-    robot.policy = 'srnn'
+    robot.policy = 'orca'
     robot.radius = 0.3
     robot.v_pref = 1
     # FOV = this values * PI
-    robot.FOV = 2.
+    robot.FOV = 2.0
 
     noise = BaseConfig()
     noise.add_noise = False

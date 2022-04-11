@@ -8,7 +8,7 @@ from numpy.linalg import norm
 from crowd_sim.envs.utils.human import Human
 from crowd_sim.envs.utils.robot import Robot
 from crowd_sim.envs.utils.info import *
-from crowd_nav.policy.orca import ORCA
+# from crowd_nav.policy.orca import ORCA
 from crowd_sim.envs.utils.state import *
 
 
@@ -128,7 +128,8 @@ class CrowdSim(gym.Env):
         self.dummy_robot.set(7, 7, 7, 7, 0, 0, 0)
         self.dummy_robot.time_step = config.env.time_step
         self.dummy_robot.kinematics = 'holonomic'
-        self.dummy_robot.policy = ORCA(config)
+        # self.dummy_robot.policy = ORCA(config)
+        self.dummy_robot.policy = policy_factory['orca'](config)
 
 
 

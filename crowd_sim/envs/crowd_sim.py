@@ -175,7 +175,8 @@ class CrowdSim(gym.Env):
 
 
     def set_robot(self, robot):
-        raise NotImplementedError
+        self.robot = robot
+        # raise NotImplementedError
 
 
     # add all generated humans to the self.humans list
@@ -528,6 +529,7 @@ class CrowdSim(gym.Env):
         counter_offset = {'train': self.case_capacity['val'] + self.case_capacity['test'],
                           'val': 0, 'test': self.case_capacity['val']}
 
+        self.thisSeed = 1
         np.random.seed(counter_offset[phase] + self.case_counter[phase] + self.thisSeed)
 
         self.generate_robot_humans(phase)
@@ -538,6 +540,7 @@ class CrowdSim(gym.Env):
             self.randomize_human_policies()
 
         # case size is used to make sure that the case_counter is always between 0 and case_size[phase]
+        self.nenv = 1
         self.case_counter[phase] = (self.case_counter[phase] + int(1*self.nenv)) % self.case_size[phase]
 
         # get current observation
@@ -860,7 +863,8 @@ class CrowdSim(gym.Env):
         """
 
         # clip the action to obey robot's constraint
-        action = self.robot.policy.clip_action(action, self.robot.v_pref)
+        if not (self.robot.policy.name in ['ORCA']):
+            action = self.robot.policy.clip_action(action, self.robot.v_pref)
 
         # step all humans
         human_actions = self.get_human_actions()
@@ -912,6 +916,13 @@ class CrowdSim(gym.Env):
         goal_color = 'red'
         arrow_color = 'red'
         arrow_style = patches.ArrowStyle("->", head_length=4, head_width=2)
+
+        # fig, self.render_axis = plt.subplots(figsize=(7, 7))
+        # self.render_axis.tick_params(labelsize=16)
+        # self.render_axis.set_xlim(-7, 7)
+        # self.render_axis.set_ylim(-7, 7)
+        # self.render_axis.set_xlabel('x(m)', fontsize=16)
+        # self.render_axis.set_ylabel('y(m)', fontsize=16)
 
         def calcFOVLineEndPoint(ang, point, extendFactor):
             # choose the extendFactor big enough

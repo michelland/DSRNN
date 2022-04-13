@@ -2,8 +2,9 @@ import logging
 import argparse
 import os
 import sys
-
+import numpy as np
 import gym
+from crowd_nav.utils.explorer import Explorer
 from matplotlib import pyplot as plt
 import torch
 import torch.nn as nn
@@ -25,8 +26,10 @@ def main():
 	parser.add_argument('--visualize', default=False, action='store_true')
 	# if -1, it will run 500 different cases; if >=0, it will run the specified test case repeatedly
 	parser.add_argument('--test_case', type=int, default=-1)
+	parser.add_argument('--phase', type=str, default='test')
 	# model weight file you want to test
 	parser.add_argument('--test_model', type=str, default='27776.pt')
+	parser.add_argument('--video_file', type=str, default=None)
 	test_args = parser.parse_args()
 
 	# CONFIG
@@ -57,11 +60,6 @@ def main():
 		policy = policy_factory['orca'](config)
 		# logging.info('Robot policy : ', policy.name)
 
-
-		# configure env
-		env_name = config.env.env_name
-		logging.info('Env name: %s', env_name)
-
 		# evaluation directory
 		eval_dir = os.path.join(test_args.model_dir, 'eval')
 		if not os.path.exists(eval_dir):
@@ -79,13 +77,47 @@ def main():
 		else:
 			ax = None
 
-		env = gym.make('CrowdSimDict-v0')
+		# configure env
+		# env_name = config.env.env_name
+		env_name = 'CrowdSim-v0'
+		logging.info('Env name: %s', env_name)
+		env = gym.make(env_name)
 		env.configure(config)
 		robot = Robot(config, 'robot')
 		robot.set_policy(policy)
 		env.set_robot(robot)
+		# explorer = Explorer(env, robot, device, gamma=0.9)
 
-		return
+		# set safety space for ORCA in non-cooperative simulation
+		if isinstance(robot.policy, policy_factory['orca']):
+			if robot.visible:
+				robot.policy.safety_space = 0
+			else:
+				# because invisible case breaks the reciprocal assumption
+				# adding some safety space improves ORCA performance. Tune this value based on your need.
+				robot.policy.safety_space = 0
+			logging.info('ORCA agent buffer: %f', robot.policy.safety_space)
+
+		# policy.set_env(env)
+		robot.print_info()
+
+		if test_args.visualize:
+			ob = env.reset(test_args.phase, test_case=test_args.test_case)
+			done = False
+			last_pos = np.array(robot.get_position())
+			while not done:
+				action = robot.act(ob)
+				ob, _, done, info = env.step(action)
+				current_pos = np.array(robot.get_position())
+				logging.debug('Speed: %.2f', np.linalg.norm(current_pos - last_pos) / robot.time_step)
+				last_pos = current_pos
+
+			env.render('video')
+
+			logging.info('It takes %.2f seconds to finish. Final status is %s', env.global_time, info)
+			if robot.visible and info == 'reach goal':
+				human_times = env.get_human_times()
+				logging.info('Average time for humans to reach goal: %.2f', sum(human_times) / len(human_times))
 
 	else:
 		from importlib import import_module

@@ -63,7 +63,7 @@ class Config(object):
     robot = BaseConfig()
     robot.visible = False # the robot is visible to humans
     # srnn for now
-    robot.policy = 'orca'
+    robot.policy = 'srnn'
     robot.radius = 0.3
     robot.v_pref = 1
     # FOV = this values * PI

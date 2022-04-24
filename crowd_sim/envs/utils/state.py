@@ -42,13 +42,19 @@ class ObservableState(object):
 
 
 class JointState(object):
-    def __init__(self, self_state, human_states):
+    def __init__(self, self_state, human_states, obstacles_states=None):
+        if obstacles_states is None:
+            obstacles_states = []
+        else:
+            for obstacle_state in obstacles_states:
+                assert isinstance(obstacle_state, ObstacleState)
         assert isinstance(self_state, FullState)
-        for human_state in human_states:
-            assert isinstance(human_state, ObservableState)
+        # for human_state in human_states:
+        #     assert isinstance(human_state, ObservableState)
 
         self.self_state = self_state
         self.human_states = human_states
+        self.obstacle_states = obstacles_states
 
 
 class ObservableState_noV(object):
@@ -66,6 +72,16 @@ class ObservableState_noV(object):
     def __str__(self):
         return ' '.join([str(x) for x in [self.px, self.py, self.radius]])
 
+class ObstacleState(object):
+    def __init__(self, shape, px, py, radius, vertices=None):
+        self.shape = shape
+        self.px = px
+        self.py = py
+        self.radius = radius
+        self.vertices = vertices
+
+    def __str__(self):
+        return ' '.join([str(x) for x in [self.px, self.py, self.radius]])
 
 class JointState_noV(object):
     def __init__(self, self_state, human_states):

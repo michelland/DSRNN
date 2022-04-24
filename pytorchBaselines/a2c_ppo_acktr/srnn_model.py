@@ -10,7 +10,6 @@ class RNNBase(nn.Module):
     def __init__(self, config, edge):
         super(RNNBase, self).__init__()
         self.config = config
-
         # if this is an edge RNN
         if edge:
             self.gru = nn.GRU(config.SRNN.human_human_edge_embedding_size, config.SRNN.human_human_edge_rnn_size)

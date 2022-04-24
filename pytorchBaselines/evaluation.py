@@ -8,7 +8,7 @@ from pytorchBaselines.a2c_ppo_acktr import utils
 def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, logging, visualize=False,
              recurrent_type='GRU'):
     test_size = config.env.test_size
-
+    print("policy type", type(actor_critic).__name__)
     if ob_rms:
         vec_norm = utils.get_vec_normalize(eval_envs)
         if vec_norm is not None:

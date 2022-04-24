@@ -73,6 +73,7 @@ class ORCA(Policy):
         :return:
         """
         self_state = state.self_state
+        obstacle_states = state.obstacle_states
         # max number of humans = current number of humans
         self.max_neighbors = len(state.human_states)
         self.radius = state.self_state.radius
@@ -87,6 +88,10 @@ class ORCA(Policy):
             for human_state in state.human_states:
                 self.sim.addAgent(human_state.position, *params, human_state.radius + 0.01 + self.config.orca.safety_space,
                                   self.max_speed, human_state.velocity)
+            for obstacle_state in obstacle_states:
+                vertices = [obstacle_state.vertices[0], obstacle_state.vertices[3], obstacle_state.vertices[2], obstacle_state.vertices[1]]
+                self.sim.addObstacle(vertices)
+            self.sim.processObstacles()
         else:
             self.sim.setAgentPosition(0, self_state.position)
             self.sim.setAgentVelocity(0, self_state.velocity)

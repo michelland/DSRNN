@@ -218,6 +218,7 @@ def main():
 
 		ob_rms = False
 
+		policy = policy_factory['orca'](config)
 		# actor_critic, ob_rms, eval_envs, num_processes, device, num_episodes
 		evaluate(actor_critic, ob_rms, envs, 1, device, config, logging, test_args.visualize, recurrent_cell)
 

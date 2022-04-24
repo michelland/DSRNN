@@ -15,6 +15,9 @@ class Config(object):
     env.randomize_attributes = True # randomize the preferred velocity and radius of humans or not
     env.seed = 0  # random seed for environment
 
+    env.radius_obstacles = 0.5
+    env.map_name = "map_15_02"
+
     # reward function
     reward = BaseConfig()
     reward.success_reward = 10

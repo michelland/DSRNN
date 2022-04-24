@@ -7,6 +7,8 @@ import random
 from numpy.linalg import norm
 from crowd_sim.envs.utils.human import Human
 from crowd_sim.envs.utils.robot import Robot
+from crowd_sim.envs.utils.obstacle import Obstacle
+from crowd_sim.envs.utils.map import Map
 from crowd_sim.envs.utils.info import *
 # from crowd_nav.policy.orca import ORCA
 from crowd_sim.envs.utils.state import *
@@ -75,10 +77,18 @@ class CrowdSim(gym.Env):
 
         self.potential = None
 
+        #map
+        self.map_path = None
+        self.map = None
+
 
     # configurate the environment with the given config
     def configure(self, config):
         self.config = config
+
+        self.map_path = "./crowd_nav/maps/map_7_03.txt"
+        self.map = Map(config, self.map_path)
+        self.map.print_info()
 
         self.time_limit = config.env.time_limit
         self.time_step = config.env.time_step
@@ -821,6 +831,7 @@ class CrowdSim(gym.Env):
     def get_human_actions(self):
         # step all humans
         human_actions = []  # a list of all humans' actions
+        ob_obstacles_rectangle = [obstacle.get_observable_state() for obstacle in self.map.obstacles_rectangle]
         for i, human in enumerate(self.humans):
             # observation for humans is always coordinates
             ob = []
@@ -852,7 +863,7 @@ class CrowdSim(gym.Env):
                 else:
                     ob += [self.dummy_robot.get_observable_state()]
 
-            human_actions.append(human.act(ob))
+            human_actions.append(human.act((ob, ob_obstacles_rectangle)))
         return human_actions
 
 
@@ -919,8 +930,8 @@ class CrowdSim(gym.Env):
 
         # fig, self.render_axis = plt.subplots(figsize=(7, 7))
         # self.render_axis.tick_params(labelsize=16)
-        # self.render_axis.set_xlim(-7, 7)
-        # self.render_axis.set_ylim(-7, 7)
+        self.render_axis.set_xlim(-self.map.size, self.map.size)
+        self.render_axis.set_ylim(-self.map.size, self.map.size)
         # self.render_axis.set_xlabel('x(m)', fontsize=16)
         # self.render_axis.set_ylabel('y(m)', fontsize=16)
 
@@ -954,7 +965,20 @@ class CrowdSim(gym.Env):
         ax.add_artist(robot)
         artists.append(robot)
 
-        plt.legend([robot, goal], ['Robot', 'Goal'], fontsize=16)
+        # add obstacles
+        obstacle_rectangle = None
+        for obstacle in self.map.obstacles_rectangle:
+            obstacle_rectangle = plt.Rectangle(obstacle.vertices[3], obstacle.radius * 2, obstacle.radius * 2,
+                                               fill=True, color='g')
+            ax.add_artist(obstacle_rectangle)
+        for obstacle in self.map.obstacles_circle:
+            obstacle_rectangle = plt.Circle(obstacle.get_position(), obstacle.radius, fill=True, color='g')
+            ax.add_artist(obstacle_rectangle)
+
+        # if obstacle_rectangle is None:
+        #     plt.legend([robot, goal], ['Robot', 'Goal'], fontsize=16)
+        # else:
+        #     plt.legend([robot, goal, obstacle_rectangle], ['Robot', 'Goal', 'Obstacle'], fontsize=16)
 
 
         # compute orientation in each step and add arrow to show the direction
@@ -1018,6 +1042,15 @@ class CrowdSim(gym.Env):
                 human_circles[i].set_color(c='r')
             plt.text(self.humans[i].px - 0.1, self.humans[i].py - 0.1, str(i), color='black', fontsize=12)
 
+        # add obstacles
+        obstacle_rectangle = None
+        for obstacle in self.map.obstacles_rectangle:
+            obstacle_rectangle = plt.Rectangle(obstacle.vertices[3], obstacle.radius * 2, obstacle.radius * 2,
+                                               fill=True, color='g')
+            ax.add_artist(obstacle_rectangle)
+        for obstacle in self.map.obstacles_circle:
+            obstacle_rectangle = plt.Circle(obstacle.get_position(), obstacle.radius, fill=True, color='g')
+            ax.add_artist(obstacle_rectangle)
 
         plt.pause(0.1)
         for item in artists:

@@ -8,9 +8,9 @@ from crowd_sim.envs.utils.obstacle import ObstacleCircle
 
 
 class Map(object):
-    def __init__(self, config, path):
+    def __init__(self, radius, path):
         # self.radius = config.getfloat('obstacles', 'radius')
-        self.radius = 0.5
+        self.radius = radius
         self.grid = np.loadtxt(path, dtype=int)
         self.obstacles_circle = []
         self.obstacles_rectangle = []

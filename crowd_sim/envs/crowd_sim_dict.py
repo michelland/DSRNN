@@ -125,6 +125,7 @@ class CrowdSimDict(CrowdSim):
         Compute actions for all agents, detect collision, update environment and return (ob, reward, done, info)
         """
         action = self.robot.policy.clip_action(action, self.robot.v_pref)
+        # action = ActionXY(0,0)
 
         if self.robot.kinematics == 'unicycle':
             self.desiredVelocity[0] = np.clip(self.desiredVelocity[0]+action.v,-self.robot.v_pref,self.robot.v_pref)

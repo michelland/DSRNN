@@ -15,8 +15,10 @@ class Config(object):
     env.randomize_attributes = True # randomize the preferred velocity and radius of humans or not
     env.seed = 0  # random seed for environment
 
+    # innovation
     env.radius_obstacles = 0.5
-    env.map_name = "map_15_02"
+    env.map_name = "map_6_01"
+    env.occlusion = True
 
     # reward function
     reward = BaseConfig()
@@ -73,7 +75,7 @@ class Config(object):
     robot.radius = 0.3  # radius of the robot
     robot.v_pref = 1  # max velocity of the robot
     # robot FOV = this values * PI
-    robot.FOV = 2.
+    robot.FOV = 0.5
 
     # add noise to observation or not
     noise = BaseConfig()

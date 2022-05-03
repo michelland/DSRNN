@@ -1,4 +1,6 @@
 import logging
+import math
+
 import gym
 import numpy as np
 import random
@@ -79,16 +81,21 @@ class CrowdSim(gym.Env):
 
         #map
         self.map_path = None
+        self.radius_obstacle = None
         self.map = None
+        self.occlusion = None
 
 
     # configurate the environment with the given config
     def configure(self, config):
         self.config = config
 
-        self.map_path = "./crowd_nav/maps/map_7_03.txt"
-        self.map = Map(config, self.map_path)
-        self.map.print_info()
+        # self.map_path = "./crowd_nav/maps/map_7_03.txt"
+        self.map_path = "./crowd_nav/maps/" + config.env.map_name + ".txt"
+        self.radius_obstacle = config.env.radius_obstacles
+        self.map = Map(self.radius_obstacle, self.map_path)
+        self.occlusion = config.env.occlusion
+        print("OCCLUSION", self.occlusion)
 
         self.time_limit = config.env.time_limit
         self.time_step = config.env.time_step
@@ -649,6 +656,42 @@ class CrowdSim(gym.Env):
             human.gy = gy
         return
 
+    # Check if agent 2 is obstructed in agent1's FOV
+    def check_obstruction(self, state1, state2):
+        rx = state1.px
+        ry = state1.py
+        hx = state2.px
+        hy = state2.py
+        deltaY = hy - ry
+        deltaX = hx - rx
+        m = deltaY / deltaX # coefficient directeur de la droite (state1, state2)
+        b = -1 * rx * m + ry # ordonnée à l'origine de cette meme droite
+
+        # On vérifie pour chaque autre humain si il obstrut l'humain courant dans le FOV du robot
+        obstruction = False
+        for i,human in enumerate(self.humans):
+            if human.px != hx or human.py != hy:
+                d_human_droite = abs(m * human.px - human.py + b) / math.sqrt(m*m + 1)
+                d_state1_human = math.sqrt((human.px - state1.px)*(human.px - state1.px) + (human.py - state1.py)*(human.py - state1.py))
+                d_state1_state2 = math.sqrt((state2.px - state1.px)*(state2.px - state1.px) + (state2.py - state1.py)*(state2.py - state1.py))
+                if d_state1_human < d_state1_state2:
+                    if d_human_droite < human.radius:
+                        obstruction = True
+                        break
+
+        if not obstruction:
+            for i,obstacle in enumerate(self.map.obstacles_rectangle):
+                if obstacle.px != hx or obstacle.py != hy:
+                    d_human_droite = abs(m * obstacle.px - obstacle.py + b) / math.sqrt(m*m + 1)
+                    d_state1_human = math.sqrt((obstacle.px - state1.px)*(obstacle.px - state1.px) + (obstacle.py - state1.py)*(obstacle.py - state1.py))
+                    d_state1_state2 = math.sqrt((state2.px - state1.px)*(state2.px - state1.px) + (state2.py - state1.py)*(state2.py - state1.py))
+                    if d_state1_human < d_state1_state2:
+                        if d_human_droite < obstacle.radius:
+                            obstruction = True
+                            break
+
+        return obstruction
+
     # Caculate whether agent2 is in agent1's FOV
     # Not the same as whether agent1 is in agent2's FOV!!!!
     # arguments:
@@ -681,7 +724,14 @@ class CrowdSim(gym.Env):
                 fov = self.human_fov
 
         if np.abs(offset) <= fov / 2:
-            return True
+            if self.occlusion:
+                if robot1:
+                    obstruction = self.check_obstruction(state1, state2)
+                    return not obstruction
+                else:
+                    return True
+            else:
+                return True
         else:
             return False
 
@@ -881,7 +931,6 @@ class CrowdSim(gym.Env):
         """
         Compute actions for all agents, detect collision, update environment and return (ob, reward, done, info)
         """
-
         # clip the action to obey robot's constraint
         if not (self.robot.policy.name in ['ORCA']):
             action = self.robot.policy.clip_action(action, self.robot.v_pref)

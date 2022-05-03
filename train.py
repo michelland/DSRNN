@@ -79,7 +79,6 @@ def main():
 	else:
 		ax = None
 
-
 	if config.sim.render:
 		config.training.num_processes = 1
 		config.ppo.num_mini_batch = 1

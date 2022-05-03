@@ -33,7 +33,7 @@ class CrowdSimDict(CrowdSim):
         d['robot_node'] = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(1,7,), dtype = np.float32)
         # only consider the robot temporal edge and spatial edges pointing from robot to each human
         d['temporal_edges'] = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(1,2,), dtype=np.float32)
-        d['spatial_edges'] = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(self.human_num, 2), dtype=np.float32)
+        d['spatial_edges'] = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(self.human_num + self.map.obstacle_num, 2), dtype=np.float32)
         self.observation_space=gym.spaces.Dict(d)
 
         high = np.inf * np.ones([2, ])
@@ -56,10 +56,15 @@ class CrowdSimDict(CrowdSim):
         # temporal edge: robot's velocity
         ob['temporal_edges'] = np.array([self.robot.vx, self.robot.vy])
         # spatial edges: the vector pointing from the robot position to each human's position
-        ob['spatial_edges'] = np.zeros((self.human_num, 2))
+        ob['spatial_edges'] = np.zeros((self.human_num + self.map.obstacle_num, 2))
+        # ob['spatial_edges'] = np.zeros((self.human_num, 2))
         for i in range(self.human_num):
             relative_pos = np.array([self.last_human_states[i, 0] - self.robot.px, self.last_human_states[i, 1] - self.robot.py])
             ob['spatial_edges'][i] = relative_pos
+
+        for j in range(self.map.obstacle_num):
+            relative_pos = np.array([self.map.obstacles_rectangle[j].px - self.robot.px, self.map.obstacles_rectangle[j].py - self.robot.py])
+            ob['spatial_edges'][self.human_num + j] = relative_pos
 
         return ob
 

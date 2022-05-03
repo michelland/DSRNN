@@ -331,7 +331,8 @@ class SRNN(nn.Module):
         self.is_recurrent = True
         self.config=config
 
-        self.human_num = config.sim.human_num
+        # self.human_num = config.sim.human_num
+        self.human_num = obs_space_dict['spatial_edges'].shape[0]
 
         self.seq_length = config.ppo.num_steps
         self.nenv = config.training.num_processes

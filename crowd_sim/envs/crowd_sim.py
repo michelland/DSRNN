@@ -753,6 +753,15 @@ class CrowdSim(gym.Env):
             elif closest_dist < dmin:
                 dmin = closest_dist
 
+        for i, obstacle in enumerate(self.map.obstacles_rectangle):
+            dx = obstacle.px - self.robot.px
+            dy = obstacle.py - self.robot.py
+            closest_dist = (dx ** 2 + dy ** 2) ** (1 / 2) - obstacle.radius - self.robot.radius
+
+            if closest_dist < 0:
+                collision = True
+                # logging.debug("Collision: distance between robot and p{} is {:.2E}".format(i, closest_dist))
+                break
 
         # check if reaching the goal
         reaching_goal = norm(np.array(self.robot.get_position()) - np.array(self.robot.get_goal_position())) < self.robot.radius

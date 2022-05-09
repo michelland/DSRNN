@@ -1030,9 +1030,11 @@ class CrowdSim(gym.Env):
             obstacle_rectangle = plt.Rectangle(obstacle.vertices[3], obstacle.radius * 2, obstacle.radius * 2,
                                                fill=True, color='g')
             ax.add_artist(obstacle_rectangle)
+            artists.append(obstacle_rectangle)
         for obstacle in self.map.obstacles_circle:
             obstacle_rectangle = plt.Circle(obstacle.get_position(), obstacle.radius, fill=True, color='g')
             ax.add_artist(obstacle_rectangle)
+
 
         # if obstacle_rectangle is None:
         #     plt.legend([robot, goal], ['Robot', 'Goal'], fontsize=16)
@@ -1101,15 +1103,15 @@ class CrowdSim(gym.Env):
                 human_circles[i].set_color(c='r')
             plt.text(self.humans[i].px - 0.1, self.humans[i].py - 0.1, str(i), color='black', fontsize=12)
 
-        # add obstacles
-        obstacle_rectangle = None
-        for obstacle in self.map.obstacles_rectangle:
-            obstacle_rectangle = plt.Rectangle(obstacle.vertices[3], obstacle.radius * 2, obstacle.radius * 2,
-                                               fill=True, color='g')
-            ax.add_artist(obstacle_rectangle)
-        for obstacle in self.map.obstacles_circle:
-            obstacle_rectangle = plt.Circle(obstacle.get_position(), obstacle.radius, fill=True, color='g')
-            ax.add_artist(obstacle_rectangle)
+        # # add obstacles
+        # obstacle_rectangle = None
+        # for obstacle in self.map.obstacles_rectangle:
+        #     obstacle_rectangle = plt.Rectangle(obstacle.vertices[3], obstacle.radius * 2, obstacle.radius * 2,
+        #                                        fill=True, color='g')
+        #     ax.add_artist(obstacle_rectangle)
+        # for obstacle in self.map.obstacles_circle:
+        #     obstacle_rectangle = plt.Circle(obstacle.get_position(), obstacle.radius, fill=True, color='g')
+        #     ax.add_artist(obstacle_rectangle)
 
         plt.pause(0.1)
         for item in artists:

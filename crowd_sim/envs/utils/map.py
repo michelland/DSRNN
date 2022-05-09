@@ -20,20 +20,19 @@ class Map(object):
         self.obstacle_num = 0
         self.grid = None
 
-        if self.map_random:
-            self.generate_random_map(4, 1)
-        else:
-            self.generate_map_from_path(path)
+        # if self.map_random:
+        #     self.generate_random_map(6, 3)
+        # else:
+        #     self.generate_map_from_path(path)
 
     def generate_random_map(self, num_obstacles, radius_zone):
         self.obstacles_rectangle = []
         possible_positions = [(i, j) for i in range(-radius_zone, radius_zone + 1) for j in range(-radius_zone, radius_zone + 1)]
-        random.seed(1)
-        positions = random.sample(possible_positions, num_obstacles)
+        ind = [i for i in range(len(possible_positions))]
+        # random.seed(1)
+        positions = np.random.choice(a=ind, size=num_obstacles, replace=False)
         for pos in positions:
-            self.obstacles_rectangle.append(ObstacleRectangle(pos[0], pos[1], self.radius))
-
-        print(positions)
+            self.obstacles_rectangle.append(ObstacleRectangle(possible_positions[pos][0], possible_positions[pos][1], self.radius))
 
     def generate_map_from_path(self, path):
         self.grid = np.loadtxt(path, dtype=int)

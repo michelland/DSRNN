@@ -17,8 +17,9 @@ class Config(object):
 
     # innovation
     env.radius_obstacles = 0.5
+    env.map_random = True
     env.map_name = "map_6_02"
-    env.occlusion = False
+    env.occlusion = True
 
     # reward function
     reward = BaseConfig()

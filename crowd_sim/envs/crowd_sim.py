@@ -83,6 +83,7 @@ class CrowdSim(gym.Env):
         self.map_path = None
         self.radius_obstacle = None
         self.map = None
+        self.map_random = None
         self.occlusion = None
 
 
@@ -92,8 +93,9 @@ class CrowdSim(gym.Env):
 
         # self.map_path = "./crowd_nav/maps/map_7_03.txt"
         self.map_path = "./crowd_nav/maps/" + config.env.map_name + ".txt"
+        self.map_random = config.env.map_random
         self.radius_obstacle = config.env.radius_obstacles
-        self.map = Map(self.radius_obstacle, self.map_path)
+        self.map = Map(self.radius_obstacle, self.map_path, self.map_random)
         self.occlusion = config.env.occlusion
         print("OCCLUSION", self.occlusion)
 
@@ -742,7 +744,6 @@ class CrowdSim(gym.Env):
         human_ids = []
         humans_in_view = []
         num_humans_in_view = 0
-
         for i in range(self.human_num):
             visible = self.detect_visible(self.robot, self.humans[i], robot1=True)
             if visible:

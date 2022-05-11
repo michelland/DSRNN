@@ -22,13 +22,13 @@ def main():
 	# the following parameters will be determined for each test run
 	parser = argparse.ArgumentParser('Parse configuration file')
 	# the model directory that we are testing
-	parser.add_argument('--model_dir', type=str, default='data/test_model_08')
-	parser.add_argument('--visualize', default=False, action='store_true')
+	parser.add_argument('--model_dir', type=str, default='data/test_model_05')
+	parser.add_argument('--visualize', default=True, action='store_true')
 	# if -1, it will run 500 different cases; if >=0, it will run the specified test case repeatedly
 	parser.add_argument('--test_case', type=int, default=-1)
 	parser.add_argument('--phase', type=str, default='test')
 	# model weight file you want to test
-	parser.add_argument('--test_model', type=str, default='27900.pt')
+	parser.add_argument('--test_model', type=str, default='27000.pt')
 	parser.add_argument('--video_file', type=str, default=None)
 	test_args = parser.parse_args()
 
@@ -47,7 +47,6 @@ def main():
 		print('Failed to get Config function from ', test_args.model_dir, '/config.py')
 		from crowd_nav.configs.config import Config
 	config = Config()
-	print(config.robot.policy)
 
 	if config.robot.policy == 'orca':
 
@@ -189,7 +188,8 @@ def main():
 
 
 		load_path=os.path.join(test_args.model_dir,'checkpoints', test_args.test_model)
-		print(load_path)
+		info_path = "Load Path : " + load_path
+		logging.info(info_path)
 
 
 		env_name = config.env.env_name

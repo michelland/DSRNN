@@ -100,7 +100,9 @@ class CrowdSimDict(CrowdSim):
         # here we use a counter to calculate seed. The seed=counter_offset + case_counter
         np.random.seed(counter_offset[phase] + self.case_counter[phase] + self.thisSeed)
         self.generate_robot_humans(phase)
-        self.map.generate_random_map(6,3)
+
+        if self.map_random:
+            self.map.generate_random_map(5,2)
 
 
         # If configured to randomize human policies, do so

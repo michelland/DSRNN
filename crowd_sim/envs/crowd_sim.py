@@ -97,7 +97,15 @@ class CrowdSim(gym.Env):
         self.radius_obstacle = config.env.radius_obstacles
         self.map = Map(self.radius_obstacle, self.map_path, self.map_random)
         self.occlusion = config.env.occlusion
-        print("OCCLUSION", self.occlusion)
+        if self.map_random:
+            logging.info("Map : random")
+        else:
+            logging.info("Map : ", config.env.map_name)
+        if self.occlusion:
+            logging.info("Occlusion : True")
+        else:
+            logging.info("Occlusion : False")
+        # logging.info("Occlusion : ", self.occlusion)
 
         self.time_limit = config.env.time_limit
         self.time_step = config.env.time_step

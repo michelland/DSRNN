@@ -20,12 +20,13 @@ class Map(object):
         self.obstacle_num = 0
         self.grid = None
 
-        # if self.map_random:
-        #     self.generate_random_map(6, 3)
-        # else:
-        #     self.generate_map_from_path(path)
+        if self.map_random:
+            self.generate_random_map(5, 2)
+        else:
+            self.generate_map_from_path(path)
 
     def generate_random_map(self, num_obstacles, radius_zone):
+        self.obstacle_num = num_obstacles
         self.obstacles_rectangle = []
         possible_positions = [(i, j) for i in range(-radius_zone, radius_zone + 1) for j in range(-radius_zone, radius_zone + 1)]
         ind = [i for i in range(len(possible_positions))]

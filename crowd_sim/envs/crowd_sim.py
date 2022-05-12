@@ -100,7 +100,8 @@ class CrowdSim(gym.Env):
         if self.map_random:
             logging.info("Map : random")
         else:
-            logging.info("Map : ", config.env.map_name)
+            map_name = "Map : " + config.env.map_name
+            logging.info(map_name)
         if self.occlusion:
             logging.info("Occlusion : True")
         else:

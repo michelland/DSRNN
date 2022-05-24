@@ -208,6 +208,53 @@ class HumanHumanEdgeRNN(RNNBase):
 
         return x, h_new
 
+class SpatialEdgeRNN(RNNBase):
+    '''
+    Class representing the Human-Human Edge RNN in the s-t graph
+    '''
+    def __init__(self, config):
+        '''
+        Initializer function
+        params:
+        args : Training arguments
+        infer : Training or test time (True at test time)
+        '''
+        super(SpatialEdgeRNN, self).__init__(config, edge=True)
+
+        self.config = config
+
+        # Store required sizes
+        self.rnn_size = config.SRNN.human_human_edge_rnn_size
+        self.embedding_size = config.SRNN.human_human_edge_embedding_size // 2
+        self.input_size = config.SRNN.human_human_edge_input_size
+
+        # Linear layer to embed input
+        self.encoder_linear_humans = nn.Linear(self.input_size, self.embedding_size)
+        self.encoder_linear_obstacles= nn.Linear(self.input_size, self.embedding_size)
+        self.relu = nn.ReLU()
+
+
+    def forward(self, inp_humans, inp_obstacles, h, masks):
+        '''
+        Forward pass for the model
+        params:
+        inp : input edge features
+        h : hidden state of the current edgeRNN
+        c : cell state of the current edgeRNN
+        '''
+        # Encode the input position
+        encoded_input_humans = self.encoder_linear_humans(inp_humans)
+        encoded_input_humans = self.relu(encoded_input_humans)
+
+        encoded_input_obstacles= self.encoder_linear_obstacles(inp_obstacles)
+        encoded_input_obstacles = self.relu(encoded_input_obstacles)
+
+        concat_encoded = torch.cat((encoded_input_humans, encoded_input_obstacles), -1)
+
+        x, h_new = self._forward_gru(concat_encoded, h, masks)
+
+        return x, h_new
+
 class EdgeAttention(nn.Module):
     '''
     Class representing the attention module
@@ -314,7 +361,7 @@ class EdgeAttention(nn.Module):
             return weighted_value_list[0], attn_list[0]
 
 
-class SRNN(nn.Module):
+class SRNN2(nn.Module):
     """
     Class representing the SRNN model
     """
@@ -325,13 +372,13 @@ class SRNN(nn.Module):
         args : Training arguments
         infer : Training or test time (True at test time)
         """
-        super(SRNN, self).__init__()
+        super(SRNN2, self).__init__()
         self.infer = infer
         self.is_recurrent = True
         self.config=config
 
         # self.human_num = config.sim.human_num
-        self.human_num = obs_space_dict['spatial_edges'].shape[0]
+        self.human_num = obs_space_dict['spatial_edges_humans'].shape[0]
 
         self.seq_length = config.ppo.num_steps
         self.nenv = config.training.num_processes
@@ -344,7 +391,10 @@ class SRNN(nn.Module):
 
         # Initialize the Node and Edge RNNs
         self.humanNodeRNN = HumanNodeRNN(config)
-        self.humanhumanEdgeRNN_spatial = HumanHumanEdgeRNN(config)
+
+        self.humanhumanEdgeRNN_spatial = SpatialEdgeRNN(config)
+        # self.humanhumanEdgeRNN_spatial = HumanHumanEdgeRNN(config)
+
         self.humanhumanEdgeRNN_temporal = HumanHumanEdgeRNN(config)
 
         # Initialize attention module
@@ -387,7 +437,8 @@ class SRNN(nn.Module):
 
         robot_node = reshapeT(inputs['robot_node'], seq_length, nenv)
         temporal_edges = reshapeT(inputs['temporal_edges'], seq_length, nenv)
-        spatial_edges = reshapeT(inputs['spatial_edges'], seq_length, nenv)
+        spatial_edges_humans = reshapeT(inputs['spatial_edges_humans'], seq_length, nenv)
+        spatial_edges_obstacles = reshapeT(inputs['spatial_edges_obstacles'], seq_length, nenv)
 
         hidden_states_node_RNNs = reshapeT(rnn_hxs['human_node_rnn'], 1, nenv)
         hidden_states_edge_RNNs = reshapeT(rnn_hxs['human_human_edge_rnn'], 1, nenv)
@@ -411,7 +462,7 @@ class SRNN(nn.Module):
         # Spatial Edges
         hidden_spatial_start_end=hidden_states_edge_RNNs[:,:,self.spatial_edges,:]
         # Do forward pass through spatialedgeRNN
-        output_spatial, hidden_spatial = self.humanhumanEdgeRNN_spatial(spatial_edges, hidden_spatial_start_end, masks)
+        output_spatial, hidden_spatial = self.humanhumanEdgeRNN_spatial(spatial_edges_humans, spatial_edges_obstacles, hidden_spatial_start_end, masks)
 
         # Update the hidden state and cell state
         all_hidden_states_edge_RNNs[:, :,self.spatial_edges,: ] = hidden_spatial

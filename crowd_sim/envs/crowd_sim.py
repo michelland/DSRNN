@@ -144,6 +144,8 @@ class CrowdSim(gym.Env):
         logging.info('robot FOV %f', self.robot_fov)
         logging.info('humans FOV %f', self.human_fov)
 
+        logging.info('robot policy: {}'.format(self.config.robot.policy))
+
 
         # set dummy human and dummy robot
         # dummy humans, used if any human is not in view of other agents

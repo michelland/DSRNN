@@ -4,6 +4,7 @@ import torch.nn as nn
 
 from pytorchBaselines.a2c_ppo_acktr.distributions import Bernoulli, Categorical, DiagGaussian
 from pytorchBaselines.a2c_ppo_acktr.srnn_model import SRNN
+from pytorchBaselines.a2c_ppo_acktr.srnn_model_2 import SRNN2
 
 
 class Flatten(nn.Module):
@@ -19,6 +20,10 @@ class Policy(nn.Module):
 
         if base == 'srnn':
             base=SRNN
+            self.base = base(obs_shape, base_kwargs)
+            self.srnn = True
+        elif base == 'srnn2':
+            base = SRNN2
             self.base = base(obs_shape, base_kwargs)
             self.srnn = True
         else:

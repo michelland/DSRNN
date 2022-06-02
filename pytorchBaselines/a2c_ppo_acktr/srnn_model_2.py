@@ -32,9 +32,11 @@ class RNNBase(nn.Module):
             # use env dimension as batch
             # [1, 12, 6, ?] -> [1, 12*6, ?] or [30, 6, 6, ?] -> [30, 6*6, ?]
             seq_len, nenv, agent_num, _ = x.size()
+            # print("agent num :", agent_num)
             x = x.view(seq_len, nenv*agent_num, -1)
             hxs_times_masks = hxs * (masks.view(seq_len, nenv, 1, 1))
             hxs_times_masks = hxs_times_masks.view(seq_len, nenv*agent_num, -1)
+            # print("hidden: ",hxs_times_masks.shape)
             x, hxs = self.gru(x, hxs_times_masks) # we already unsqueezed the inputs in SRNN forward function
             x = x.view(seq_len, nenv, agent_num, -1)
             hxs = hxs.view(seq_len, nenv, agent_num, -1)
@@ -243,13 +245,17 @@ class SpatialEdgeRNN(RNNBase):
         c : cell state of the current edgeRNN
         '''
         # Encode the input position
+        # print("input : ", inp_humans.shape)
         encoded_input_humans = self.encoder_linear_humans(inp_humans)
         encoded_input_humans = self.relu(encoded_input_humans)
+        # print("humans : ", encoded_input_humans.shape)
 
         encoded_input_obstacles= self.encoder_linear_obstacles(inp_obstacles)
         encoded_input_obstacles = self.relu(encoded_input_obstacles)
+        # print("obstacles : ", encoded_input_obstacles.shape)
 
         concat_encoded = torch.cat((encoded_input_humans, encoded_input_obstacles), -1)
+        # print("concat :", concat_encoded.shape)
 
         x, h_new = self._forward_gru(concat_encoded, h, masks)
 

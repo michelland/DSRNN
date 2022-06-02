@@ -22,7 +22,7 @@ def main():
 	# the following parameters will be determined for each test run
 	parser = argparse.ArgumentParser('Parse configuration file')
 	# the model directory that we are testing
-	parser.add_argument('--model_dir', type=str, default='data/test_model_14')
+	parser.add_argument('--model_dir', type=str, default='data/test_model_11_02')
 	parser.add_argument('--visualize', default=False, action='store_true')
 	# if -1, it will run 500 different cases; if >=0, it will run the specified test case repeatedly
 	parser.add_argument('--test_case', type=int, default=-1)

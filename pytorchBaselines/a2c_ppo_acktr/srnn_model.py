@@ -201,8 +201,10 @@ class HumanHumanEdgeRNN(RNNBase):
         c : cell state of the current edgeRNN
         '''
         # Encode the input position
+        # print("input : ", inp.shape)
         encoded_input = self.encoder_linear(inp)
         encoded_input = self.relu(encoded_input)
+        # print("concat :", encoded_input.shape)
 
         x, h_new = self._forward_gru(encoded_input, h, masks)
 

@@ -28,13 +28,19 @@ class RNNBase(nn.Module):
     # masks: [1, nenv, 1]
     def _forward_gru(self, x, hxs, masks):
         # for acting model, input shape[0] == hidden state shape[0]
+        # print("input gru shape : ", x.shape)
+        # print("input gru size : ", x.size(0))
+        # print("hxs size : ", hxs.shape)
+        print("input forward gru : ", hxs.shape)
         if x.size(0) == hxs.size(0):
             # use env dimension as batch
             # [1, 12, 6, ?] -> [1, 12*6, ?] or [30, 6, 6, ?] -> [30, 6*6, ?]
             seq_len, nenv, agent_num, _ = x.size()
             x = x.view(seq_len, nenv*agent_num, -1)
+            # print("input after view : ", agent_num)
             hxs_times_masks = hxs * (masks.view(seq_len, nenv, 1, 1))
             hxs_times_masks = hxs_times_masks.view(seq_len, nenv*agent_num, -1)
+            print("hidden gru input: ", hxs_times_masks.shape)
             x, hxs = self.gru(x, hxs_times_masks) # we already unsqueezed the inputs in SRNN forward function
             x = x.view(seq_len, nenv, agent_num, -1)
             hxs = hxs.view(seq_len, nenv, agent_num, -1)
@@ -95,6 +101,7 @@ class RNNBase(nn.Module):
             x = x.view(T, N, agent_num, -1)
             hxs = hxs.view(1, N, agent_num, -1)
 
+        # print("output gru : ", x.shape)
         return x, hxs
 
 
@@ -206,6 +213,7 @@ class HumanHumanEdgeRNN(RNNBase):
         encoded_input = self.relu(encoded_input)
         # print("concat :", encoded_input.shape)
 
+        print("before input gru", h.shape)
         x, h_new = self._forward_gru(encoded_input, h, masks)
 
         return x, h_new
@@ -334,6 +342,7 @@ class SRNN(nn.Module):
 
         # self.human_num = config.sim.human_num
         self.human_num = obs_space_dict['spatial_edges'].shape[0]
+        # print("input dict spatial edges", obs_space_dict['spatial_edges'].shape)
 
         self.seq_length = config.ppo.num_steps
         self.nenv = config.training.num_processes
@@ -377,6 +386,8 @@ class SRNN(nn.Module):
 
 
     def forward(self, inputs, rnn_hxs, masks, infer=False):
+
+        print("first rnn : ", rnn_hxs['human_human_edge_rnn'].shape)
         if infer:
             # Test time
             seq_length = 1
@@ -390,15 +401,19 @@ class SRNN(nn.Module):
         robot_node = reshapeT(inputs['robot_node'], seq_length, nenv)
         temporal_edges = reshapeT(inputs['temporal_edges'], seq_length, nenv)
         spatial_edges = reshapeT(inputs['spatial_edges'], seq_length, nenv)
+        # print("shape after reshape : ", spatial_edges.shape)
 
         hidden_states_node_RNNs = reshapeT(rnn_hxs['human_node_rnn'], 1, nenv)
         hidden_states_edge_RNNs = reshapeT(rnn_hxs['human_human_edge_rnn'], 1, nenv)
+        print("hidden states edge rnn : ", hidden_states_edge_RNNs.shape)
         masks = reshapeT(masks, seq_length, nenv)
 
         if not (self.config.training.cuda and torch.cuda.is_available()):
+            # print("size hidden edge rnn", rnn_hxs['human_human_edge_rnn'].size()[-1])
             all_hidden_states_edge_RNNs = Variable(
                 torch.zeros(1, nenv, self.num_edges, rnn_hxs['human_human_edge_rnn'].size()[-1]).cpu())
         else:
+            # print("size hidden edge rnn", rnn_hxs['human_human_edge_rnn'].size()[-1])
             all_hidden_states_edge_RNNs = Variable(
                 torch.zeros(1, nenv, self.num_edges, rnn_hxs['human_human_edge_rnn'].size()[-1]).cuda())
 
@@ -413,6 +428,7 @@ class SRNN(nn.Module):
         # Spatial Edges
         hidden_spatial_start_end=hidden_states_edge_RNNs[:,:,self.spatial_edges,:]
         # Do forward pass through spatialedgeRNN
+        print("forward spatial edge : ", hidden_spatial_start_end.shape)
         output_spatial, hidden_spatial = self.humanhumanEdgeRNN_spatial(spatial_edges, hidden_spatial_start_end, masks)
 
         # Update the hidden state and cell state

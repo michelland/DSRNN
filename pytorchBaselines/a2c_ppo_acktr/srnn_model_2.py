@@ -28,6 +28,7 @@ class RNNBase(nn.Module):
     # masks: [1, nenv, 1]
     def _forward_gru(self, x, hxs, masks):
         # for acting model, input shape[0] == hidden state shape[0]
+        # print("input forward gru : ", hxs.shape)
         if x.size(0) == hxs.size(0):
             # use env dimension as batch
             # [1, 12, 6, ?] -> [1, 12*6, ?] or [30, 6, 6, ?] -> [30, 6*6, ?]
@@ -36,7 +37,7 @@ class RNNBase(nn.Module):
             x = x.view(seq_len, nenv*agent_num, -1)
             hxs_times_masks = hxs * (masks.view(seq_len, nenv, 1, 1))
             hxs_times_masks = hxs_times_masks.view(seq_len, nenv*agent_num, -1)
-            # print("hidden: ",hxs_times_masks.shape)
+            # print("hidden gru input: ",hxs_times_masks.shape)
             x, hxs = self.gru(x, hxs_times_masks) # we already unsqueezed the inputs in SRNN forward function
             x = x.view(seq_len, nenv, agent_num, -1)
             hxs = hxs.view(seq_len, nenv, agent_num, -1)
@@ -227,7 +228,7 @@ class SpatialEdgeRNN(RNNBase):
 
         # Store required sizes
         self.rnn_size = config.SRNN.human_human_edge_rnn_size
-        self.embedding_size = config.SRNN.human_human_edge_embedding_size // 2
+        self.embedding_size = config.SRNN.human_human_edge_embedding_size # // 2
         self.input_size = config.SRNN.human_human_edge_input_size
 
         # Linear layer to embed input
@@ -254,9 +255,11 @@ class SpatialEdgeRNN(RNNBase):
         encoded_input_obstacles = self.relu(encoded_input_obstacles)
         # print("obstacles : ", encoded_input_obstacles.shape)
 
-        concat_encoded = torch.cat((encoded_input_humans, encoded_input_obstacles), -1)
+        concat_encoded = torch.cat((encoded_input_humans, encoded_input_obstacles), -2)
         # print("concat :", concat_encoded.shape)
 
+        # print("h shape input gru", h.shape)
+        # print("before input gru", h.shape)
         x, h_new = self._forward_gru(concat_encoded, h, masks)
 
         return x, h_new
@@ -384,7 +387,8 @@ class SRNN2(nn.Module):
         self.config=config
 
         # self.human_num = config.sim.human_num
-        self.human_num = obs_space_dict['spatial_edges_humans'].shape[0]
+        # self.human_num = obs_space_dict['spatial_edges_humans'].shape[0]
+        self.human_num = 10
 
         self.seq_length = config.ppo.num_steps
         self.nenv = config.training.num_processes
@@ -431,6 +435,7 @@ class SRNN2(nn.Module):
 
 
     def forward(self, inputs, rnn_hxs, masks, infer=False):
+        # print("first rnn : ", rnn_hxs['human_human_edge_rnn'].shape)
         if infer:
             # Test time
             seq_length = 1
@@ -443,8 +448,10 @@ class SRNN2(nn.Module):
 
         robot_node = reshapeT(inputs['robot_node'], seq_length, nenv)
         temporal_edges = reshapeT(inputs['temporal_edges'], seq_length, nenv)
-        spatial_edges_humans = reshapeT(inputs['spatial_edges_humans'], seq_length, nenv)
-        spatial_edges_obstacles = reshapeT(inputs['spatial_edges_obstacles'], seq_length, nenv)
+        # spatial_edges_humans = reshapeT(inputs['spatial_edges_humans'], seq_length, nenv)
+        # spatial_edges_obstacles = reshapeT(inputs['spatial_edges_obstacles'], seq_length, nenv)
+        spatial_edges_humans = reshapeT(inputs['spatial_edges'][:,0:5,:], seq_length, nenv)
+        spatial_edges_obstacles = reshapeT(inputs['spatial_edges'][:,5:10,:], seq_length, nenv)
 
         hidden_states_node_RNNs = reshapeT(rnn_hxs['human_node_rnn'], 1, nenv)
         hidden_states_edge_RNNs = reshapeT(rnn_hxs['human_human_edge_rnn'], 1, nenv)
@@ -467,6 +474,7 @@ class SRNN2(nn.Module):
 
         # Spatial Edges
         hidden_spatial_start_end=hidden_states_edge_RNNs[:,:,self.spatial_edges,:]
+        # print("hidden_spatial_start_end", hidden_spatial_start_end.shape)
         # Do forward pass through spatialedgeRNN
         output_spatial, hidden_spatial = self.humanhumanEdgeRNN_spatial(spatial_edges_humans, spatial_edges_obstacles, hidden_spatial_start_end, masks)
 
@@ -491,6 +499,7 @@ class SRNN2(nn.Module):
 
         rnn_hxs['human_node_rnn'] = all_hidden_states_node_RNNs
         rnn_hxs['human_human_edge_rnn'] = all_hidden_states_edge_RNNs
+        # print('second : ', rnn_hxs['human_human_edge_rnn'].shape)
 
 
         # x is the output of the robot node and will be sent to actor and critic

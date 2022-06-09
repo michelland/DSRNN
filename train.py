@@ -128,6 +128,7 @@ def main():
 
 	obs = envs.reset()
 	if isinstance(obs, dict):
+		print("is instance")
 		for key in obs:
 			rollouts.obs[key][0].copy_(obs[key])
 	else:

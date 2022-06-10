@@ -31,7 +31,7 @@ class RNNBase(nn.Module):
         # print("input gru shape : ", x.shape)
         # print("input gru size : ", x.size(0))
         # print("hxs size : ", hxs.shape)
-        print("input forward gru : ", hxs.shape)
+        # print("input forward gru : ", hxs.shape)
         if x.size(0) == hxs.size(0):
             # use env dimension as batch
             # [1, 12, 6, ?] -> [1, 12*6, ?] or [30, 6, 6, ?] -> [30, 6*6, ?]
@@ -40,7 +40,7 @@ class RNNBase(nn.Module):
             # print("input after view : ", agent_num)
             hxs_times_masks = hxs * (masks.view(seq_len, nenv, 1, 1))
             hxs_times_masks = hxs_times_masks.view(seq_len, nenv*agent_num, -1)
-            print("hidden gru input: ", hxs_times_masks.shape)
+            # print("hidden gru input: ", hxs_times_masks.shape)
             x, hxs = self.gru(x, hxs_times_masks) # we already unsqueezed the inputs in SRNN forward function
             x = x.view(seq_len, nenv, agent_num, -1)
             hxs = hxs.view(seq_len, nenv, agent_num, -1)
@@ -161,6 +161,7 @@ class HumanNodeRNN(RNNBase):
         encoded_input = self.relu(encoded_input)
 
         # Concat both the embeddings
+        # print("hspatial ", h_spatial_other.shape)
         h_edges = torch.cat((h_temporal, h_spatial_other), -1)
         h_edges_embedded = self.relu(self.edge_attention_embed(h_edges))
 
@@ -213,7 +214,7 @@ class HumanHumanEdgeRNN(RNNBase):
         encoded_input = self.relu(encoded_input)
         # print("concat :", encoded_input.shape)
 
-        print("before input gru", h.shape)
+        # print("before input gru", h.shape)
         x, h_new = self._forward_gru(encoded_input, h, masks)
 
         return x, h_new
@@ -304,10 +305,12 @@ class EdgeAttention(nn.Module):
 
             # Embed the temporal edgeRNN hidden state
             temporal_embed = self.temporal_edge_layer[i](h_temporal)
+            # print("temporal_embed ", temporal_embed.shape)
             # temporal_embed = temporal_embed.squeeze(0)
 
             # Embed the spatial edgeRNN hidden states
             spatial_embed = self.spatial_edge_layer[i](h_spatials)
+            # print("spatial_embed ", spatial_embed.shape)
 
             # Dot based attention
             try:
@@ -315,6 +318,8 @@ class EdgeAttention(nn.Module):
             except RuntimeError:
                 print('hello')
             weighted_value,attn=self.att_func(temporal_embed, spatial_embed, h_spatials)
+            # print("weighted value,", weighted_value.shape)
+            # print("attn ", attn)
             weighted_value_list.append(weighted_value)
             attn_list.append(attn)
 
@@ -384,10 +389,12 @@ class SRNN(nn.Module):
         self.temporal_edges = [0]
         self.spatial_edges = np.arange(1, self.human_num+1)
 
+        self.attention_weights = []
+
 
     def forward(self, inputs, rnn_hxs, masks, infer=False):
 
-        print("first rnn : ", rnn_hxs['human_human_edge_rnn'].shape)
+        # print("first rnn : ", rnn_hxs['human_human_edge_rnn'].shape)
         if infer:
             # Test time
             seq_length = 1
@@ -405,7 +412,7 @@ class SRNN(nn.Module):
 
         hidden_states_node_RNNs = reshapeT(rnn_hxs['human_node_rnn'], 1, nenv)
         hidden_states_edge_RNNs = reshapeT(rnn_hxs['human_human_edge_rnn'], 1, nenv)
-        print("hidden states edge rnn : ", hidden_states_edge_RNNs.shape)
+        # print("hidden states edge rnn : ", hidden_states_edge_RNNs.shape)
         masks = reshapeT(masks, seq_length, nenv)
 
         if not (self.config.training.cuda and torch.cuda.is_available()):
@@ -428,15 +435,18 @@ class SRNN(nn.Module):
         # Spatial Edges
         hidden_spatial_start_end=hidden_states_edge_RNNs[:,:,self.spatial_edges,:]
         # Do forward pass through spatialedgeRNN
-        print("forward spatial edge : ", hidden_spatial_start_end.shape)
+        # print("forward spatial edge : ", hidden_spatial_start_end.shape)
         output_spatial, hidden_spatial = self.humanhumanEdgeRNN_spatial(spatial_edges, hidden_spatial_start_end, masks)
 
         # Update the hidden state and cell state
         all_hidden_states_edge_RNNs[:, :,self.spatial_edges,: ] = hidden_spatial
 
-
+        # print('output temporal ', output_temporal.shape)
+        # print('output spatial ', output_spatial.shape)
         # Do forward pass through attention module
-        hidden_attn_weighted, _ = self.attn(output_temporal, output_spatial)
+        hidden_attn_weighted, attention_weights = self.attn(output_temporal, output_spatial)
+        self.attention_weights = attention_weights
+        # print("attn weighted : ", hidden_attn_weighted.shape)
 
 
         # concatenate human node features with robot features

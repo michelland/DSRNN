@@ -151,8 +151,8 @@ def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, log
     phase = 'test'
     logging.info(
         '{:<5} {}has success rate: {:.2f}, collision rate: {:.2f}, timeout rate: {:.2f}, '
-        'nav time: {:.2f}, total reward: {:.4f}'.
-            format(phase.upper(), extra_info, success_rate, collision_rate, timeout_rate, avg_nav_time,
+        'nav time: {:.2f} +/- {:.2f}, total reward: {:.4f}'.
+            format(phase.upper(), extra_info, success_rate, collision_rate, timeout_rate, avg_nav_time, np.std(success_times),
                    np.average(cumulative_rewards)))
     if phase in ['val', 'test']:
         total_time = sum(success_times + collision_times + timeout_times)
@@ -164,12 +164,13 @@ def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, log
                      too_close * baseEnv.robot.time_step / total_time, avg_min_dist)
 
     logging.info(
-        '{:<5} {}has average path length: {:.2f}, CHC: {:.2f}'.
-            format(phase.upper(), extra_info, sum(path_lengths) / test_size, sum(chc_total) / test_size))
+        '{:<5} {}has average path length: {:.2f} +/- {:.2f}, CHC: {:.2f}'.
+            format(phase.upper(), extra_info, sum(path_lengths) / test_size, np.std(path_lengths),sum(chc_total) / test_size))
     logging.info('Collision cases: ' + ' '.join([str(x) for x in collision_cases]))
     logging.info('Timeout cases: ' + ' '.join([str(x) for x in timeout_cases]))
+    print(path_lengths)
 
     eval_envs.close()
 
-    print(" Evaluation using {} episodes: mean reward {:.5f}\n".format(
-        len(eval_episode_rewards), np.mean(eval_episode_rewards)))
+    print(" Evaluation using {} episodes: mean reward {:.5f} +/- {:.2f}\n".format(
+        len(eval_episode_rewards), np.mean(eval_episode_rewards), np.std(eval_episode_rewards)))

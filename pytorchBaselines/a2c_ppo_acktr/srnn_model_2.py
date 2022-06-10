@@ -483,7 +483,7 @@ class SRNN2(nn.Module):
 
 
         # Do forward pass through attention module
-        hidden_attn_weighted, _ = self.attn(output_temporal, output_spatial)
+        hidden_attn_weighted, attention_weights = self.attn(output_temporal, output_spatial)
 
 
         # concatenate human node features with robot features

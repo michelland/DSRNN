@@ -18,8 +18,10 @@ class Config(object):
     # innovation
     env.radius_obstacles = 0.5
     env.map_random = True
-    env.map_name = "map_6_02"
+    env.map_name = "map_6_01"
     env.occlusion = False
+    
+    env.obstacle_num = 5
 
     # reward function
     reward = BaseConfig()
@@ -72,7 +74,7 @@ class Config(object):
     robot = BaseConfig()
     robot.visible = False  # the robot is visible to humans
     # robot policy: srnn for now
-    robot.policy = 'srnn2'
+    robot.policy = 'srnn3'
     robot.radius = 0.3  # radius of the robot
     robot.v_pref = 1  # max velocity of the robot
     # robot FOV = this values * PI

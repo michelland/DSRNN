@@ -81,12 +81,12 @@ class Policy(nn.Module):
 
     def get_value(self, inputs, rnn_hxs, masks):
 
-        value, _, _ = self.base(inputs, rnn_hxs, masks, infer=True)
+        value, _, _, _ = self.base(inputs, rnn_hxs, masks, infer=True)
 
         return value
 
     def evaluate_actions(self, inputs, rnn_hxs, masks, action):
-        value, actor_features, rnn_hxs = self.base(inputs, rnn_hxs, masks)
+        value, actor_features, rnn_hxs, _ = self.base(inputs, rnn_hxs, masks)
 
         dist = self.dist(actor_features)
 

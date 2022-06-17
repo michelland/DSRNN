@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-legends = ['DS-RNN', '']
+legends = ['DS-RNN-3', '']
 
 # add more training curves by directory name here!
-log_list = [pd.read_csv("data/test_model_17/progress.csv"),
+log_list = [pd.read_csv("data/test_model_19/progress.csv"),
 		   ]
 
 logDicts = {}

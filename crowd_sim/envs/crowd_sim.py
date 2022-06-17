@@ -524,8 +524,16 @@ class CrowdSim(gym.Env):
             else:
                 while True:
                     px, py, gx, gy = np.random.uniform(-self.circle_radius, self.circle_radius, 4)
+                    g_pos = np.array((gx, gy))
                     if np.linalg.norm([px - gx, py - gy]) >= 6:
-                        break
+                        good_pos = True
+                        for o in self.map.obstacles_rectangle:
+                            if np.linalg.norm([o.px - gx, o.py - gy]) <= o.radius:
+                                good_pos = False
+                                break
+                        if good_pos:
+                            break
+
                 self.robot.set(px, py, gx, gy, 0, 0, np.pi/2)
 
 
@@ -801,6 +809,7 @@ class CrowdSim(gym.Env):
 
         danger_dists = []
         collision = False
+        collision_obstacle = False
 
         for i, human in enumerate(self.humans):
             dx = human.px - self.robot.px
@@ -822,7 +831,7 @@ class CrowdSim(gym.Env):
             closest_dist = (dx ** 2 + dy ** 2) ** (1 / 2) - obstacle.radius - self.robot.radius
 
             if closest_dist < 0:
-                collision = True
+                collision_obstacle = True
                 # logging.debug("Collision: distance between robot and p{} is {:.2E}".format(i, closest_dist))
                 break
 
@@ -837,6 +846,10 @@ class CrowdSim(gym.Env):
             reward = self.collision_penalty
             done = True
             episode_info = Collision()
+        elif collision_obstacle:
+            reward = self.collision_penalty
+            done = True
+            episode_info = CollisionObstacle()
         elif reaching_goal:
             reward = self.success_reward
             done = True

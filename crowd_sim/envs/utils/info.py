@@ -30,6 +30,14 @@ class Collision(object):
         return 'Collision'
 
 
+class CollisionObstacle(object):
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        return 'Collision Obstacle'
+
+
 class Nothing(object):
     def __init__(self):
         pass

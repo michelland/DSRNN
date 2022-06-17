@@ -26,7 +26,9 @@ def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, log
     eval_recurrent_hidden_states = {}
 
     node_num = 1
-    edge_num = actor_critic.base.human_num + 1
+    # TODO replace human_num with agent_num, and check every SRNN model for consistency
+    edge_num = actor_critic.base.agent_num + 1
+    print(edge_num)
     eval_recurrent_hidden_states['human_node_rnn'] = torch.zeros(num_processes, node_num, config.SRNN.human_node_rnn_size * rnn_factor,
                                                                  device=device)
 
@@ -43,6 +45,7 @@ def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, log
     chc_total = []
     success = 0
     collision = 0
+    collision_obstacles = 0
     timeout = 0
     too_close = 0.
     min_dist = []
@@ -128,6 +131,11 @@ def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, log
             collision_cases.append(k)
             collision_times.append(global_time)
             print('Collision')
+        elif isinstance(infos[0]['info'], CollisionObstacle):
+            collision_obstacles += 1
+            collision_cases.append(k)
+            collision_times.append(global_time)
+            print('Collision Obstacle')
         elif isinstance(infos[0]['info'], Timeout):
             timeout += 1
             timeout_cases.append(k)
@@ -142,8 +150,9 @@ def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, log
 
     success_rate = success / test_size
     collision_rate = collision / test_size
+    collision_obstacles_rate = collision_obstacles / test_size
     timeout_rate = timeout / test_size
-    assert success + collision + timeout == test_size
+    assert success + collision + collision_obstacles + timeout == test_size
     avg_nav_time = sum(success_times) / len(
         success_times) if success_times else baseEnv.time_limit  # baseEnv.env.time_limit
 
@@ -154,6 +163,9 @@ def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, log
         'nav time: {:.2f} +/- {:.2f}, total reward: {:.4f}'.
             format(phase.upper(), extra_info, success_rate, collision_rate, timeout_rate, avg_nav_time, np.std(success_times),
                    np.average(cumulative_rewards)))
+    logging.info(
+        '{:<5} {}has obstacle collision rate : {:.2f}'.format(phase.upper(), extra_info, collision_obstacles_rate)
+    )
     if phase in ['val', 'test']:
         total_time = sum(success_times + collision_times + timeout_times)
         if min_dist:

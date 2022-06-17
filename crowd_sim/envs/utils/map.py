@@ -25,6 +25,8 @@ class Map(object):
         else:
             self.generate_map_from_path(path)
 
+        self.print_info()
+
     def generate_random_map(self, num_obstacles, radius_zone):
         self.obstacle_num = num_obstacles
         self.obstacles_rectangle = []

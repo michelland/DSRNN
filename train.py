@@ -158,7 +158,7 @@ def main():
 				rollouts_hidden_s = {}
 				for key in rollouts.recurrent_hidden_states:
 					rollouts_hidden_s[key] = rollouts.recurrent_hidden_states[key][step]
-				value, action, action_log_prob, recurrent_hidden_states = actor_critic.act(
+				value, action, action_log_prob, recurrent_hidden_states, _ = actor_critic.act(
 					rollouts_obs, rollouts_hidden_s,
 					rollouts.masks[step])
 

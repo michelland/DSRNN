@@ -401,10 +401,9 @@ class SRNN3(nn.Module):
         self.num_edges = self.agent_num + 1 # number of spatial edges + number of temporal edges
         self.temporal_edges = [0]
         self.spatial_edges_humans = np.arange(1, self.human_num+1)
-        print("self.spatial_edges_humans : ", self.spatial_edges_humans)
 
         self.spatial_edges_obstacles = np.arange(self.human_num + 1, self.agent_num + 1)
-        print("self.spatial_edges_obstacles : ", self.spatial_edges_obstacles)
+
 
         self.attention_weights = []
 

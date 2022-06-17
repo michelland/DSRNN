@@ -387,8 +387,8 @@ class SRNN2(nn.Module):
         self.config=config
 
         # self.human_num = config.sim.human_num
-        self.human_num = obs_space_dict['spatial_edges_humans'].shape[0]
-        print(self.human_num)
+        self.human_num = obs_space_dict['spatial_edges'].shape[0]
+        print("agent num : ", self.human_num)
         # self.human_num = 10
 
         self.seq_length = config.ppo.num_steps
@@ -513,9 +513,9 @@ class SRNN2(nn.Module):
             rnn_hxs[key] = rnn_hxs[key].squeeze(0)
 
         if infer:
-            return self.critic_linear(hidden_critic).squeeze(0), hidden_actor.squeeze(0), rnn_hxs
+            return self.critic_linear(hidden_critic).squeeze(0), hidden_actor.squeeze(0), rnn_hxs, attention_weights
         else:
-            return self.critic_linear(hidden_critic).view(-1, 1), hidden_actor.view(-1, self.output_size), rnn_hxs
+            return self.critic_linear(hidden_critic).view(-1, 1), hidden_actor.view(-1, self.output_size), rnn_hxs, attention_weights
 
 
 def reshapeT(T, seq_length, nenv):

@@ -1037,24 +1037,41 @@ class CrowdSim(gym.Env):
 
         # add obstacles
         obstacle_rectangle = None
-        for obstacle in self.map.obstacles_rectangle:
-            obstacle_rectangle = plt.Rectangle(obstacle.vertices[3], obstacle.radius * 2, obstacle.radius * 2,
+        # for obstacle in self.map.obstacles_rectangle:
+        #     obstacle_rectangle = plt.Rectangle(obstacle.vertices[3], obstacle.radius * 2, obstacle.radius * 2,
+        #                                        fill=True, color='g')
+        #     ax.add_artist(obstacle_rectangle)
+        #     artists.append(obstacle_rectangle)
+
+        for i in range(len(self.map.obstacles_rectangle)):
+            obstacle_rectangle = plt.Rectangle(self.map.obstacles_rectangle[i].vertices[3],
+                                               self.map.obstacles_rectangle[i].radius * 2,
+                                               self.map.obstacles_rectangle[i].radius * 2,
                                                fill=True, color='g')
             ax.add_artist(obstacle_rectangle)
             artists.append(obstacle_rectangle)
-        for obstacle in self.map.obstacles_circle:
-            obstacle_rectangle = plt.Circle(obstacle.get_position(), obstacle.radius, fill=True, color='g')
-            ax.add_artist(obstacle_rectangle)
+            plt.text(self.map.obstacles_rectangle[i].vertices[0][0] + 0.4,
+                     self.map.obstacles_rectangle[i].vertices[0][1] - 0.6,
+                     str(i+self.human_num), color='black', fontsize=14)
 
 
+        # for obstacle in self.map.obstacles_circle:
+        #     obstacle_rectangle = plt.Circle(obstacle.get_position(), obstacle.radius, fill=True, color='b')
+        #     ax.add_artist(obstacle_rectangle)
+
+        # plt.text(self.humans[i].px - 0.1, self.humans[i].py - 0.1, str(i), color='black', fontsize=12)
         # if obstacle_rectangle is None:
         #     plt.legend([robot, goal], ['Robot', 'Goal'], fontsize=16)
         # else:
         #     plt.legend([robot, goal, obstacle_rectangle], ['Robot', 'Goal', 'Obstacle'], fontsize=16)
 
         if attention_weights is not None:
-            attention_scores = [
-                plt.text(-5.5,5.5 -0.5 * i, 'Agent {}: {:.2f}'.format(i+1, attention_weights[0][i][0]), fontsize=12) for i in range(len(attention_weights[0]))
+            attention_scores_humans = [
+                plt.text(-5.5,5.5 -0.5 * i, 'Human {}: {:.2f}'.format(i, attention_weights[0][i][0]), fontsize=12) for i in range(self.human_num)
+            ]
+            attention_scores_obstacles= [
+                plt.text(2.5, 5.5 - 0.5 * (i-self.map.obstacle_num), 'Obstacle {}: {:.2f}'.format(i, attention_weights[0][i][0]), fontsize=12) for
+                i in range(self.human_num, self.human_num + self.map.obstacle_num)
             ]
 
         # compute orientation in each step and add arrow to show the direction

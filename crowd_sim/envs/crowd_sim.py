@@ -86,6 +86,7 @@ class CrowdSim(gym.Env):
         self.map_random = None
         self.occlusion = None
 
+        self.attention_weights = None
 
     # configurate the environment with the given config
     def configure(self, config):
@@ -986,11 +987,10 @@ class CrowdSim(gym.Env):
 
 
     # render function
-    def render(self, mode='human'):
+    def render(self, attention_weights, mode='human'):
         import matplotlib.pyplot as plt
         import matplotlib.lines as mlines
         from matplotlib import patches
-
         plt.rcParams['animation.ffmpeg_path'] = '/usr/bin/ffmpeg'
 
         robot_color = 'yellow'
@@ -1052,6 +1052,10 @@ class CrowdSim(gym.Env):
         # else:
         #     plt.legend([robot, goal, obstacle_rectangle], ['Robot', 'Goal', 'Obstacle'], fontsize=16)
 
+        if attention_weights is not None:
+            attention_scores = [
+                plt.text(-5.5,5.5 -0.5 * i, 'Agent {}: {:.2f}'.format(i+1, attention_weights[0][i][0]), fontsize=12) for i in range(len(attention_weights[0]))
+            ]
 
         # compute orientation in each step and add arrow to show the direction
         radius = self.robot.radius

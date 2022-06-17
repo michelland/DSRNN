@@ -63,7 +63,7 @@ class Policy(nn.Module):
         if not hasattr(self, 'srnn'):
             self.srnn = False
         if self.srnn:
-            value, actor_features, rnn_hxs = self.base(inputs, rnn_hxs, masks, infer=True)
+            value, actor_features, rnn_hxs, attention_weights = self.base(inputs, rnn_hxs, masks, infer=True)
 
         else:
             value, actor_features, rnn_hxs = self.base(inputs, rnn_hxs, masks)
@@ -77,7 +77,7 @@ class Policy(nn.Module):
         action_log_probs = dist.log_probs(action)
         dist_entropy = dist.entropy().mean()
 
-        return value, action, action_log_probs, rnn_hxs
+        return value, action, action_log_probs, rnn_hxs, attention_weights
 
     def get_value(self, inputs, rnn_hxs, masks):
 

@@ -70,7 +70,7 @@ def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, log
         while not done:
             stepCounter = stepCounter + 1
             with torch.no_grad():
-                _, action, _, eval_recurrent_hidden_states = actor_critic.act(
+                _, action, _, eval_recurrent_hidden_states, attention_weights = actor_critic.act(
                     obs,
                     eval_recurrent_hidden_states,
                     eval_masks,
@@ -78,7 +78,7 @@ def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, log
             if not done:
                 global_time = baseEnv.global_time
             if visualize:
-                eval_envs.render()
+                eval_envs.render(attention_weights)
 
             # Obser reward and next obs
             obs, rew, done, infos = eval_envs.step(action)

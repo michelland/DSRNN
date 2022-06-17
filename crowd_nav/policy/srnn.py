@@ -12,6 +12,10 @@ class SRNN(Policy):
 		self.trainable = True
 		self.multiagent_training = True
 
+		self.attention_weights = []
+
+	def get_attention_weights(self):
+		return self.attention_weights
 
 	# clip the self.raw_action and return the clipped action
 	def clip_action(self, raw_action, v_pref):

@@ -144,6 +144,8 @@ class CrowdSimDict(CrowdSim):
         """
         action = self.robot.policy.clip_action(action, self.robot.v_pref)
         # action = ActionXY(0,0)
+        if hasattr(self.robot.policy,'get_attention_weights'):
+            self.attention_weights = self.robot.policy.get_attention_weights()
 
         if self.robot.kinematics == 'unicycle':
             self.desiredVelocity[0] = np.clip(self.desiredVelocity[0]+action.v,-self.robot.v_pref,self.robot.v_pref)

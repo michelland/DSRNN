@@ -74,7 +74,7 @@ class Config(object):
     robot = BaseConfig()
     robot.visible = False  # the robot is visible to humans
     # robot policy: srnn for now
-    robot.policy = 'srnn'
+    robot.policy = 'srnn4'
     robot.radius = 0.3  # radius of the robot
     robot.v_pref = 1  # max velocity of the robot
     # robot FOV = this values * PI
@@ -129,7 +129,7 @@ class Config(object):
     SRNN.human_node_output_size = 256  # Dimension of the node output
 
     # Embedding size
-    SRNN.human_node_embedding_size = 64  # Embedding size of node features
+    SRNN.human_node_embedding_size = 32  # Embedding size of node features
     SRNN.human_human_edge_embedding_size = 64  # Embedding size of edge features
 
     # Attention vector dimension

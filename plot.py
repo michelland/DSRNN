@@ -7,7 +7,7 @@ import numpy as np
 legends = ['DS-RNN-3', '']
 
 # add more training curves by directory name here!
-log_list = [pd.read_csv("data/test_model_19/progress.csv"),
+log_list = [pd.read_csv("data/test_model_20/progress.csv"),
 		   ]
 
 logDicts = {}

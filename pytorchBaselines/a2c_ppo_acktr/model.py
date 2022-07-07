@@ -7,6 +7,7 @@ from pytorchBaselines.a2c_ppo_acktr.srnn_model import SRNN
 from pytorchBaselines.a2c_ppo_acktr.srnn_model_2 import SRNN2
 from pytorchBaselines.a2c_ppo_acktr.srnn_model_3 import SRNN3
 from pytorchBaselines.a2c_ppo_acktr.srnn_model_4 import SRNN4
+from pytorchBaselines.a2c_ppo_acktr.srnn_model_5 import SRNN5
 
 
 class Flatten(nn.Module):
@@ -34,6 +35,10 @@ class Policy(nn.Module):
             self.srnn = True
         elif base == 'srnn4':
             base = SRNN4
+            self.base = base(obs_shape, base_kwargs)
+            self.srnn = True
+        elif base == 'srnn5':
+            base = SRNN5
             self.base = base(obs_shape, base_kwargs)
             self.srnn = True
         else:

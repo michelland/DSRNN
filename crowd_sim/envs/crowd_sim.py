@@ -1082,10 +1082,10 @@ class CrowdSim(gym.Env):
             attention_scores_humans = [
                 plt.text(-5.5,5.5 -0.5 * i, 'Human {}: {:.2f}'.format(i, attention_weights[0][i][0]), fontsize=12) for i in range(self.human_num)
             ]
-            attention_scores_obstacles= [
-                plt.text(2.5, 5.5 - 0.5 * (i-self.map.obstacle_num), 'Obstacle {}: {:.2f}'.format(i, attention_weights[0][i][0]), fontsize=12) for
-                i in range(self.human_num, self.human_num + self.map.obstacle_num)
-            ]
+            # attention_scores_obstacles= [
+            #     plt.text(2.5, 5.5 - 0.5 * (i-self.map.obstacle_num), 'Obstacle {}: {:.2f}'.format(i, attention_weights[0][i][0]), fontsize=12) for
+            #     i in range(self.human_num, self.human_num + self.map.obstacle_num)
+            # ]
 
         # compute orientation in each step and add arrow to show the direction
         radius = self.robot.radius

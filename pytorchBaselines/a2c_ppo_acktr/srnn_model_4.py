@@ -15,7 +15,7 @@ class RNNBase(nn.Module):
             self.gru = nn.GRU(config.SRNN.human_human_edge_embedding_size, config.SRNN.human_human_edge_rnn_size)
         # if this is a node RNN
         else:
-            self.gru = nn.GRU(config.SRNN.human_node_embedding_size*4, config.SRNN.human_node_rnn_size)
+            self.gru = nn.GRU(config.SRNN.human_node_embedding_size*3, config.SRNN.human_node_rnn_size)
 
         for name, param in self.gru.named_parameters():
             if 'bias' in name:
@@ -141,10 +141,10 @@ class HumanNodeRNN(RNNBase):
 
 
         # Linear layer to embed edgeRNN hidden states
-        self.edge_embed = nn.Linear(self.edge_rnn_size, self.embedding_size * 2)
+        self.edge_embed = nn.Linear(self.edge_rnn_size, self.embedding_size)
 
         # Linear layer to embed attention module output
-        self.edge_attention_embed = nn.Linear(self.edge_rnn_size*2, self.embedding_size * 2)
+        self.edge_attention_embed = nn.Linear(self.edge_rnn_size*2, self.embedding_size)
 
 
         # Output linear layer

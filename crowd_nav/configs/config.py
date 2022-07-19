@@ -74,7 +74,7 @@ class Config(object):
     robot = BaseConfig()
     robot.visible = False  # the robot is visible to humans
     # robot policy: srnn for now
-    robot.policy = 'srnn4'
+    robot.policy = 'srnn5'
     robot.radius = 0.3  # radius of the robot
     robot.v_pref = 1  # max velocity of the robot
     # robot FOV = this values * PI
@@ -141,7 +141,7 @@ class Config(object):
     training.eps = 1e-5  # RMSprop optimizer epsilon
     training.alpha = 0.99  # RMSprop optimizer alpha
     training.max_grad_norm = 0.5  # max norm of gradients
-    training.num_env_steps = 10e6  # number of environment steps to train: 10e6 for holonomic, 20e6 for unicycle
+    training.num_env_steps = 20e6  # number of environment steps to train: 10e6 for holonomic, 20e6 for unicycle
     training.use_linear_lr_decay = False  # use a linear schedule on the learning rate: True for unicycle, False for holonomic
     training.save_interval = 200  # save interval, one save per n updates
     training.log_interval = 20  # log interval, one log per n updates

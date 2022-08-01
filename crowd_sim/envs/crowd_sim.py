@@ -40,6 +40,8 @@ class CrowdSim(gym.Env):
         self.discomfort_dist = None
         self.discomfort_dist_front = None
         self.discomfort_penalty_factor = None
+
+        self.collision_obstacle_penalty = None
         # simulation configuration
         self.config = None
         self.case_capacity = None
@@ -119,6 +121,8 @@ class CrowdSim(gym.Env):
         self.discomfort_dist_front = config.reward.discomfort_dist_front
         self.discomfort_penalty_factor = config.reward.discomfort_penalty_factor
 
+        self.collision_obstacle_penalty = config.env.collision_obstacle_penalty
+
         if self.config.humans.policy == 'orca' or self.config.humans.policy == 'social_force':
             self.case_capacity = {'train': np.iinfo(np.uint32).max - 2000, 'val': 1000, 'test': 1000}
             self.case_size = {'train': np.iinfo(np.uint32).max - 2000, 'val': self.config.env.val_size,
@@ -146,7 +150,8 @@ class CrowdSim(gym.Env):
         logging.info('humans FOV %f', self.human_fov)
 
         logging.info('robot policy: {}'.format(self.config.robot.policy))
-
+        logging.info('collision human penalty : {}'.format(self.collision_penalty))
+        logging.info('collision obstacle penalty : {}'.format(self.collision_obstacle_penalty))
 
         # set dummy human and dummy robot
         # dummy humans, used if any human is not in view of other agents
@@ -847,7 +852,7 @@ class CrowdSim(gym.Env):
             done = True
             episode_info = Collision()
         elif collision_obstacle:
-            reward = self.collision_penalty
+            reward = self.collision_obstacle_penalty
             done = True
             episode_info = CollisionObstacle()
         elif reaching_goal:

@@ -22,6 +22,7 @@ class Config(object):
     env.occlusion = False
     
     env.obstacle_num = 5
+    env.collision_obstacle_penalty = -10
 
     # reward function
     reward = BaseConfig()
@@ -129,7 +130,7 @@ class Config(object):
     SRNN.human_node_output_size = 256  # Dimension of the node output
 
     # Embedding size
-    SRNN.human_node_embedding_size = 64  # Embedding size of node features
+    SRNN.human_node_embedding_size = 32  # Embedding size of node features
     SRNN.human_human_edge_embedding_size = 64  # Embedding size of edge features
 
     # Attention vector dimension

@@ -15,7 +15,7 @@ class RNNBase(nn.Module):
             self.gru = nn.GRU(config.SRNN.human_human_edge_embedding_size, config.SRNN.human_human_edge_rnn_size)
         # if this is a node RNN
         else:
-            self.gru = nn.GRU(config.SRNN.human_node_embedding_size*3, config.SRNN.human_node_rnn_size)
+            self.gru = nn.GRU(config.SRNN.human_node_embedding_size*4, config.SRNN.human_node_rnn_size)
 
         for name, param in self.gru.named_parameters():
             if 'bias' in name:
@@ -128,7 +128,7 @@ class HumanNodeRNN(RNNBase):
         self.edge_rnn_size = config.SRNN.human_human_edge_rnn_size
 
         # Linear layer to embed input
-        self.encoder_linear = nn.Linear(self.input_size, self.embedding_size)
+        self.encoder_linear = nn.Linear(self.input_size, self.embedding_size * 2)
 
         # ReLU and Dropout layers
         self.relu = nn.ReLU()

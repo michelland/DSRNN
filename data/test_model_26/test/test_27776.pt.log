@@ -1,0 +1,20 @@
+2022-09-08 18:15:31, INFO: robot FOV 0.500000
+2022-09-08 18:15:31, INFO: humans FOV 2.000000
+2022-09-08 18:15:31, INFO: Create other envs with new settings
+2022-09-08 18:15:31, INFO: Load Path : data/test_model_26/checkpoints/27776.pt
+2022-09-08 18:15:31, INFO: Map : random
+2022-09-08 18:15:31, INFO: Occlusion : False
+2022-09-08 18:15:31, INFO: human number: 5
+2022-09-08 18:15:31, INFO: Randomize human's radius and preferred speed
+2022-09-08 18:15:31, INFO: Circle width: 6
+2022-09-08 18:15:31, INFO: robot FOV 1.570796
+2022-09-08 18:15:31, INFO: humans FOV 6.283185
+2022-09-08 18:15:31, INFO: robot policy: srnn5
+2022-09-08 18:15:31, INFO: collision human penalty : -20
+2022-09-08 18:15:31, INFO: collision obstacle penalty : -10
+2022-09-08 18:15:31, INFO: TEST  has success rate: 1.00, collision rate: 0.00, timeout rate: 0.00, nav time: 10.50 +/- 0.00, total reward: 25.6711
+2022-09-08 18:15:31, INFO: TEST  has obstacle collision rate : 0.00
+2022-09-08 18:15:31, INFO: Frequency of being in danger: 0.07 and average min separate distance in danger: 0.13
+2022-09-08 18:15:31, INFO: TEST  has average path length: 196.17 +/- 0.00, CHC: 4.87
+2022-09-08 18:15:31, INFO: Collision cases: 
+2022-09-08 18:15:31, INFO: Timeout cases: 

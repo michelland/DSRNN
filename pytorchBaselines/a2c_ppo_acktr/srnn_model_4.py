@@ -423,10 +423,10 @@ class SRNN4(nn.Module):
         temporal_edges = reshapeT(inputs['temporal_edges'], seq_length, nenv)
         spatial_edges = reshapeT(inputs['spatial_edges'], seq_length, nenv)
         # print("shape after reshape : ", spatial_edges.shape)
-        spatial_edges_humans = reshapeT(inputs['spatial_edges'][:, 0:5, :], seq_length, nenv)
+        spatial_edges_humans = reshapeT(inputs['spatial_edges'][:, 0:self.human_num, :], seq_length, nenv)
         # spatial_edges_obstacles = reshapeT(inputs['spatial_edges'][:, 5:10, :], seq_length, nenv)
 
-        test = inputs['spatial_edges'][:, 5:10, :]
+        test = inputs['spatial_edges'][:, self.human_num:self.agent_num, :]
         dim = inputs['spatial_edges'].shape[0]
         test2 = test.contiguous().view(dim, -1)
         test3 = reshapeT(test2, seq_length, nenv)

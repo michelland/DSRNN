@@ -1,0 +1,131 @@
+2022-08-01 13:59:37, INFO: Create other envs with new settings
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10
+2022-08-01 13:59:37, INFO: Map : random
+2022-08-01 13:59:37, INFO: Occlusion : False
+2022-08-01 13:59:37, INFO: human number: 5
+2022-08-01 13:59:37, INFO: Randomize human's radius and preferred speed
+2022-08-01 13:59:37, INFO: Circle width: 6
+2022-08-01 13:59:37, INFO: robot FOV 1.570796
+2022-08-01 13:59:37, INFO: humans FOV 6.283185
+2022-08-01 13:59:37, INFO: robot policy: srnn5
+2022-08-01 13:59:37, INFO: collision human penalty : -20
+2022-08-01 13:59:37, INFO: collision obstacle penalty : -10

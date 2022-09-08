@@ -1,0 +1,14 @@
+2022-09-08 18:09:51, INFO: robot FOV 0.500000
+2022-09-08 18:09:51, INFO: humans FOV 2.000000
+2022-09-08 18:09:51, INFO: Create other envs with new settings
+2022-09-08 18:09:51, INFO: Load Path : data/test_model_24/checkpoints/27776.pt
+2022-09-08 18:09:51, INFO: Map : random
+2022-09-08 18:09:51, INFO: Occlusion : False
+2022-09-08 18:09:51, INFO: human number: 5
+2022-09-08 18:09:51, INFO: Randomize human's radius and preferred speed
+2022-09-08 18:09:51, INFO: Circle width: 6
+2022-09-08 18:09:51, INFO: robot FOV 1.570796
+2022-09-08 18:09:51, INFO: humans FOV 6.283185
+2022-09-08 18:09:51, INFO: robot policy: srnn4
+2022-09-08 18:09:51, INFO: collision human penalty : -20
+2022-09-08 18:09:51, INFO: collision obstacle penalty : -20

@@ -8,7 +8,7 @@ from pytorchBaselines.a2c_ppo_acktr import utils
 def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, logging, visualize=False,
              recurrent_type='GRU'):
     test_size = config.env.test_size
-    print("policy type", type(actor_critic).__name__)
+    # print("policy type", type(actor_critic).__name__)
     if ob_rms:
         vec_norm = utils.get_vec_normalize(eval_envs)
         if vec_norm is not None:
@@ -26,9 +26,8 @@ def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, log
     eval_recurrent_hidden_states = {}
 
     node_num = 1
-    # TODO replace human_num with agent_num, and check every SRNN model for consistency
     edge_num = actor_critic.base.agent_num + 1
-    print(edge_num)
+    # print(edge_num)
     eval_recurrent_hidden_states['human_node_rnn'] = torch.zeros(num_processes, node_num, config.SRNN.human_node_rnn_size * rnn_factor,
                                                                  device=device)
 
@@ -180,7 +179,7 @@ def evaluate(actor_critic, ob_rms, eval_envs, num_processes, device, config, log
             format(phase.upper(), extra_info, sum(path_lengths) / test_size, np.std(path_lengths),sum(chc_total) / test_size))
     logging.info('Collision cases: ' + ' '.join([str(x) for x in collision_cases]))
     logging.info('Timeout cases: ' + ' '.join([str(x) for x in timeout_cases]))
-    print(path_lengths)
+    # print(path_lengths)
 
     eval_envs.close()
 

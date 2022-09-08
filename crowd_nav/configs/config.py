@@ -22,7 +22,7 @@ class Config(object):
     env.occlusion = False
     
     env.obstacle_num = 5
-    env.collision_obstacle_penalty = -10
+    env.collision_obstacle_penalty = -20
 
     # reward function
     reward = BaseConfig()
@@ -75,7 +75,7 @@ class Config(object):
     robot = BaseConfig()
     robot.visible = False  # the robot is visible to humans
     # robot policy: srnn for now
-    robot.policy = 'srnn5'
+    robot.policy = 'srnn2'
     robot.radius = 0.3  # radius of the robot
     robot.v_pref = 1  # max velocity of the robot
     # robot FOV = this values * PI

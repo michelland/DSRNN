@@ -267,7 +267,7 @@ class EdgeAttention(nn.Module):
 
         # Softmax
 
-        attn = attn.view(seq_len, nenv, self.agent_num, self.human_num)
+        attn = attn.view(seq_len, nenv, self.agent_num, self.num_agents)
         attn = torch.nn.functional.softmax(attn, dim=-1)
 
         # Compute weighted value
@@ -275,11 +275,11 @@ class EdgeAttention(nn.Module):
 
         # reshape h_spatials and attn
         # shape[0] = seq_len, shape[1] = num of spatial edges (6*5 = 30), shape[2] = 256
-        h_spatials = h_spatials.view(seq_len, nenv, self.agent_num, self.human_num, h_size)
-        h_spatials = h_spatials.view(seq_len * nenv * self.agent_num, self.human_num, h_size).permute(0, 2,
+        h_spatials = h_spatials.view(seq_len, nenv, self.agent_num, self.num_agents, h_size)
+        h_spatials = h_spatials.view(seq_len * nenv * self.agent_num, self.num_agents, h_size).permute(0, 2,
                                                                                          1)  # [seq_len*nenv*6, 5, 256] -> [seq_len*nenv*6, 256, 5]
 
-        attn = attn.view(seq_len * nenv * self.agent_num, self.human_num).unsqueeze(-1)  # [seq_len*nenv*6, 5, 1]
+        attn = attn.view(seq_len * nenv * self.agent_num, self.num_agents).unsqueeze(-1)  # [seq_len*nenv*6, 5, 1]
         weighted_value = torch.bmm(h_spatials, attn)  # [seq_len*nenv*6, 256, 1]
 
         # reshape back
@@ -298,7 +298,7 @@ class EdgeAttention(nn.Module):
         h_spatials : Hidden states of all spatial edgeRNNs connected to the node.
         '''
         # find the number of humans by the size of spatial edgeRNN hidden state
-        self.human_num = h_spatials.size()[2] // self.agent_num
+        self.num_agents = h_spatials.size()[2] // self.agent_num
 
         weighted_value_list, attn_list=[],[]
         for i in range(self.num_attention_head):
@@ -314,7 +314,7 @@ class EdgeAttention(nn.Module):
 
             # Dot based attention
             try:
-                temporal_embed = temporal_embed.repeat_interleave(self.human_num, dim=2)
+                temporal_embed = temporal_embed.repeat_interleave(self.num_agents, dim=2)
             except RuntimeError:
                 print('hello')
             weighted_value,attn=self.att_func(temporal_embed, spatial_embed, h_spatials)
@@ -346,7 +346,10 @@ class SRNN(nn.Module):
         self.config=config
 
         # self.human_num = config.sim.human_num
-        self.human_num = obs_space_dict['spatial_edges'].shape[0]
+        self.human_num = config.sim.human_num
+        self.obstacle_num = config.env.obstacle_num
+        self.agent_num = self.human_num + self.obstacle_num
+        # self.human_num = obs_space_dict['spatial_edges'].shape[0]
         # print("input dict spatial edges", obs_space_dict['spatial_edges'].shape)
 
         self.seq_length = config.ppo.num_steps
@@ -385,9 +388,9 @@ class SRNN(nn.Module):
         self.robot_linear = init_(nn.Linear(7, 3))
         self.human_node_final_linear=init_(nn.Linear(self.output_size,2))
 
-        self.num_edges = self.human_num + 1 # number of spatial edges + number of temporal edges
+        self.num_edges = self.agent_num + 1 # number of spatial edges + number of temporal edges
         self.temporal_edges = [0]
-        self.spatial_edges = np.arange(1, self.human_num+1)
+        self.spatial_edges = np.arange(1, self.agent_num+1)
 
         self.attention_weights = []
 

@@ -22,7 +22,7 @@ class RolloutStorage(object):
                 self.human_num = obs_shape['spatial_edges_humans'].shape[0]
             except:
                 self.human_num = obs_shape['spatial_edges'].shape[0]
-            print(self.human_num)
+            # print(self.human_num)
         else:
             self.obs = torch.zeros(num_steps + 1, num_processes, *obs_shape)
 

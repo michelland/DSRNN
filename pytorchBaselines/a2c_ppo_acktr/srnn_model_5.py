@@ -360,11 +360,6 @@ class SRNN5(nn.Module):
         # self.human_num = obs_space_dict['spatial_edges'].shape[0]
         # print("input dict spatial edges", obs_space_dict['spatial_edges'].shape)
 
-        print("human num : ", self.human_num)
-        print("obstacle num : ", self.obstacle_num)
-        print("agent num : ", self.agent_num)
-
-
         self.seq_length = config.ppo.num_steps
         self.nenv = config.training.num_processes
         self.nminibatch = config.ppo.num_mini_batch
@@ -431,8 +426,8 @@ class SRNN5(nn.Module):
         temporal_edges = reshapeT(inputs['temporal_edges'], seq_length, nenv)
         spatial_edges = reshapeT(inputs['spatial_edges'], seq_length, nenv)
         # print("shape after reshape : ", spatial_edges.shape)
-        spatial_edges_humans = reshapeT(inputs['spatial_edges'][:, 0:5, :], seq_length, nenv)
-        spatial_edges_obstacles = reshapeT(inputs['spatial_edges'][:, 5:10, :], seq_length, nenv)
+        spatial_edges_humans = reshapeT(inputs['spatial_edges'][:, 0:self.human_num, :], seq_length, nenv)
+        spatial_edges_obstacles = reshapeT(inputs['spatial_edges'][:, self.human_num:self.agent_num, :], seq_length, nenv)
 
         hidden_states_node_RNNs = reshapeT(rnn_hxs['human_node_rnn'], 1, nenv)
         hidden_states_edge_RNNs = reshapeT(rnn_hxs['human_human_edge_rnn'], 1, nenv)
